@@ -1,0 +1,12 @@
+## Interface: 40200
+## Version: 0.1
+## Title: EventTrace
+## Author: Tim Barrass
+## Notes: A slightly more usable event trace
+## SavedVariables: EventTraceDB
+## OptionalDeps: Ace3
+## X-Embeds: Ace3
+
+embeds.xml
+
+Core.lua
