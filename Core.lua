@@ -4,7 +4,7 @@ EventTrace = LibStub("AceAddon-3.0"):NewAddon("EventTrace", "AceConsole-3.0", "A
 -- General variables and declarations
 -- ---------------------------------------------------------------------------------------
 local frame = CreateFrame("FRAME", "EventTraceAddonFrame");
-local db
+local db, foldr, concat
 
 local character = UnitName("player")
 
@@ -59,9 +59,28 @@ function Timestamp()
     return time()
 end
 
-function RecordEvent(event)
-    table.insert(db.char.events, Timestamp()..","..event)
-    EventTrace:Print(Timestamp()..","..event)
+function concat(a, b)
+    return tostring(a) .. "," .. tostring(b)
+end
+
+function foldr(f, ...)
+    if select('#', ...) < 2 then return ... end
+    local function helper(x, ...)
+        if select('#', ...) == 0 then
+          return x
+        end
+        return f(x, helper(...))
+    end
+    return helper(...)
+end
+
+function RecordEvent(event, ...)
+    local params = foldr(concat, ...)
+    if (params == nil) then
+        params = ""
+    end
+    table.insert(db.char.events, Timestamp()..","..event..","..params)
+    EventTrace:Print(Timestamp()..","..event..","..params)
 end
 
 -- ---------------------------------------------------------------------------------------
@@ -71,7 +90,7 @@ end
 -- ---------------------------------------------------------------------------------------
 local function eventHandler(self, event, ...)
     if (eventTrace == true) then
-        RecordEvent(event)
+        RecordEvent(event, ...)
     end
 end
 
